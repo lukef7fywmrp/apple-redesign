@@ -1,18 +1,17 @@
 import { ChevronDownIcon } from "@heroicons/react/solid";
-import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Currency from "react-currency-formatter";
 import { useSelector } from "react-redux";
+import Stripe from "stripe";
 import Button from "../components/Button";
 import CheckoutProduct from "../components/CheckoutProduct";
 import Header from "../components/Header";
 import { selectBasketItems, selectBasketTotal } from "../redux/basketSlice";
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
+import { fetchPostJSON } from "../utils/api-helpers";
+import getStripe from "../utils/get-stripejs";
 
 function Checkout() {
   const items = useSelector(selectBasketItems);
@@ -32,22 +31,51 @@ function Checkout() {
     setGroupedItemsInBasket(groupedItems);
   }, [items]);
 
+  // const createCheckoutSession = async () => {
+  //   setLoading(true);
+  //   const stripe = await getStripe();
+
+  //   const checkoutSession = await axios.post("/api/checkout_sessions", {
+  //     items: items,
+  //   });
+
+  //   const result = await stripe!.redirectToCheckout({
+  //     sessionId: checkoutSession.data.id,
+  //   });
+
+  //   if (result.error) {
+  //     alert(result.error.message);
+  //   }
+
+  //   setLoading(false);
+  // };
+
   const createCheckoutSession = async () => {
     setLoading(true);
-    // const stripe = await getStripe();
-    const stripe = await stripePromise;
 
-    const checkoutSession = await axios.post("/api/checkout_sessions", {
-      items: items,
-    });
+    const checkoutSession: Stripe.Checkout.Session = await fetchPostJSON(
+      "/api/checkout_sessions",
+      { items: items }
+    );
 
-    const result = await stripe?.redirectToCheckout({
-      sessionId: checkoutSession.data.id,
-    });
-
-    if (result?.error) {
-      alert(result.error.message);
+    if ((checkoutSession as any).statusCode === 500) {
+      console.error((checkoutSession as any).message);
+      return;
     }
+
+    // Redirect to Checkout.
+    const stripe = await getStripe();
+    const { error } = await stripe!.redirectToCheckout({
+      // Make the id field from the Checkout Session creation API response
+      // available to this file, so you can provide it as parameter here
+      // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+      sessionId: checkoutSession.id,
+    });
+
+    // If `redirectToCheckout` fails due to a browser or network
+    // error, display the localized error message to your customer
+    // using `error.message`.
+    console.warn(error.message);
 
     setLoading(false);
   };
