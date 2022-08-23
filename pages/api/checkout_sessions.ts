@@ -1,7 +1,65 @@
+// import { NextApiRequest, NextApiResponse } from "next";
+// import Stripe from "stripe";
+// import { urlFor } from "../../sanity";
+// const stripe: Stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+// export default async function handler(
+//   req: NextApiRequest,
+//   res: NextApiResponse
+// ) {
+//   if (req.method === "POST") {
+//     const items: Product[] = req.body.items;
+
+//     const transformedItems = items.map((item) => ({
+//       price_data: {
+//         currency: "usd",
+//         product_data: {
+//           name: item.title,
+//           images: [urlFor(item.image[0]).url()],
+//         },
+//         unit_amount: item.price * 100,
+//       },
+//       quantity: 1,
+//     }));
+
+//     try {
+//       // Create Checkout Sessions from body params.
+//       const session = await stripe.checkout.sessions.create({
+//         payment_method_types: ["card"],
+//         // shipping_address_collection: {
+//         //   allowed_countries: ["US", "CA", "GB"],
+//         // },
+//         line_items: transformedItems,
+//         payment_intent_data: {},
+//         mode: "payment",
+//         success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+//         cancel_url: `${req.headers.origin}/checkout`,
+//         metadata: {
+//           images: JSON.stringify(items.map((item) => item.image[0].asset.url)),
+//         },
+//       });
+
+//       res.status(200).json({ id: session.id });
+//       res.redirect(303, session.url!);
+//     } catch (err) {
+//       const errorMessage =
+//         err instanceof Error ? err.message : "Internal server error";
+//       res.status(500).json({ statusCode: 500, message: errorMessage });
+//     }
+//   } else {
+//     res.setHeader("Allow", "POST");
+//     res.status(405).end("Method Not Allowed");
+//   }
+// }
+
 import { NextApiRequest, NextApiResponse } from "next";
+
 import Stripe from "stripe";
 import { urlFor } from "../../sanity";
-const stripe: Stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  // https://github.com/stripe/stripe-node#configuration
+  apiVersion: "2020-08-27",
+});
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,7 +82,7 @@ export default async function handler(
 
     try {
       // Create Checkout Sessions from body params.
-      const session = await stripe.checkout.sessions.create({
+      const params: Stripe.Checkout.SessionCreateParams = {
         payment_method_types: ["card"],
         // shipping_address_collection: {
         //   allowed_countries: ["US", "CA", "GB"],
@@ -37,10 +95,11 @@ export default async function handler(
         metadata: {
           images: JSON.stringify(items.map((item) => item.image[0].asset.url)),
         },
-      });
+      };
+      const checkoutSession: Stripe.Checkout.Session =
+        await stripe.checkout.sessions.create(params);
 
-      res.status(200).json({ id: session.id });
-      res.redirect(303, session.url!);
+      res.status(200).json(checkoutSession);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Internal server error";
