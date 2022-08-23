@@ -9,6 +9,7 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     const items: Product[] = req.body.items;
+
     const transformedItems = items.map((item) => ({
       price_data: {
         currency: "usd",

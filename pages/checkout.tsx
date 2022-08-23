@@ -9,6 +9,7 @@ import Button from "../components/Button";
 import CheckoutProduct from "../components/CheckoutProduct";
 import Header from "../components/Header";
 import { selectBasketItems, selectBasketTotal } from "../redux/basketSlice";
+import instance from "../utils/axios";
 import getStripe from "../utils/get-stripejs";
 
 function Checkout() {
@@ -33,8 +34,12 @@ function Checkout() {
     setLoading(true);
     const stripe = await getStripe();
 
-    const checkoutSession = await axios.post("/api/checkout_sessions", {
-      items: items,
+    const checkoutSession = await instance({
+      method: "POST",
+      url: "checkout_sessions",
+      data: {
+        items: items,
+      },
     });
     const result = await stripe!.redirectToCheckout({
       sessionId: checkoutSession.data.id,
