@@ -9,7 +9,6 @@ import Button from "../components/Button";
 import CheckoutProduct from "../components/CheckoutProduct";
 import Header from "../components/Header";
 import { selectBasketItems, selectBasketTotal } from "../redux/basketSlice";
-import instance from "../utils/axios";
 import getStripe from "../utils/get-stripejs";
 
 function Checkout() {
@@ -30,51 +29,20 @@ function Checkout() {
     setGroupedItemsInBasket(groupedItems);
   }, [items]);
 
-  // const createCheckoutSession = async () => {
-  //   setLoading(true);
-  //   const stripe = await getStripe();
-
-  //   const checkoutSession = await instance({
-  //     method: "POST",
-  //     url: "checkout_sessions",
-  //     data: {
-  //       items: items,
-  //     },
-  //   });
-
-  //   const result = await stripe!.redirectToCheckout({
-  //     sessionId: checkoutSession.data.id,
-  //   });
-
-  //   if (result.error) {
-  //     alert(result.error.message);
-  //   }
-
-  //   setLoading(false);
-  // };
-
   const createCheckoutSession = async () => {
     setLoading(true);
     const stripe = await getStripe();
 
-    try {
-      const checkoutSession = await instance({
-        method: "POST",
-        url: "checkout_sessions",
-        data: {
-          items: items,
-        },
-      });
+    const checkoutSession = await axios.post("/api/checkout_sessions", {
+      items: items,
+    });
 
-      const result = await stripe!.redirectToCheckout({
-        sessionId: checkoutSession.data.id,
-      });
+    const result = await stripe!.redirectToCheckout({
+      sessionId: checkoutSession.data.id,
+    });
 
-      if (result.error) {
-        alert(result.error.message);
-      }
-    } catch (error: any) {
-      console.error(error.response.data);
+    if (result.error) {
+      alert(result.error.message);
     }
 
     setLoading(false);
