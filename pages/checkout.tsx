@@ -34,7 +34,7 @@ function Checkout() {
     const stripe = await getStripe();
 
     const checkoutSession = await axios.post(
-      "http://localhost:3000/api/checkout_sessions",
+      "https://apple-redesign-omega.vercel.app/api/checkout_sessions",
       {
         items: items,
       }
