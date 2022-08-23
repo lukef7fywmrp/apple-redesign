@@ -33,9 +33,12 @@ function Checkout() {
     setLoading(true);
     const stripe = await getStripe();
 
-    const checkoutSession = await axios.post("/api/checkout_sessions", {
-      items: items,
-    });
+    const checkoutSession = await axios.post(
+      "http://localhost:3000/api/checkout_sessions",
+      {
+        items: items,
+      }
+    );
 
     const result = await stripe!.redirectToCheckout({
       sessionId: checkoutSession.data.id,
