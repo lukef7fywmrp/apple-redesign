@@ -30,23 +30,51 @@ function Checkout() {
     setGroupedItemsInBasket(groupedItems);
   }, [items]);
 
+  // const createCheckoutSession = async () => {
+  //   setLoading(true);
+  //   const stripe = await getStripe();
+
+  //   const checkoutSession = await instance({
+  //     method: "POST",
+  //     url: "checkout_sessions",
+  //     data: {
+  //       items: items,
+  //     },
+  //   });
+
+  //   const result = await stripe!.redirectToCheckout({
+  //     sessionId: checkoutSession.data.id,
+  //   });
+
+  //   if (result.error) {
+  //     alert(result.error.message);
+  //   }
+
+  //   setLoading(false);
+  // };
+
   const createCheckoutSession = async () => {
     setLoading(true);
     const stripe = await getStripe();
 
-    const checkoutSession = await instance({
-      method: "POST",
-      url: "checkout_sessions",
-      data: {
-        items: items,
-      },
-    });
-    const result = await stripe!.redirectToCheckout({
-      sessionId: checkoutSession.data.id,
-    });
+    try {
+      const checkoutSession = await instance({
+        method: "POST",
+        url: "checkout_sessions",
+        data: {
+          items: items,
+        },
+      });
 
-    if (result.error) {
-      alert(result.error.message);
+      const result = await stripe!.redirectToCheckout({
+        sessionId: checkoutSession.data.id,
+      });
+
+      if (result.error) {
+        alert(result.error.message);
+      }
+    } catch (error: any) {
+      console.error(error.response.data);
     }
 
     setLoading(false);
