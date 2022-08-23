@@ -1,4 +1,5 @@
 import { ChevronDownIcon } from "@heroicons/react/solid";
+import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -9,7 +10,9 @@ import Button from "../components/Button";
 import CheckoutProduct from "../components/CheckoutProduct";
 import Header from "../components/Header";
 import { selectBasketItems, selectBasketTotal } from "../redux/basketSlice";
-import getStripe from "../utils/get-stripejs";
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 function Checkout() {
   const items = useSelector(selectBasketItems);
@@ -31,20 +34,18 @@ function Checkout() {
 
   const createCheckoutSession = async () => {
     setLoading(true);
-    const stripe = await getStripe();
+    // const stripe = await getStripe();
+    const stripe = await stripePromise;
 
-    const checkoutSession = await axios.post(
-      "https://apple-redesign-omega.vercel.app/api/checkout_sessions",
-      {
-        items: items,
-      }
-    );
+    const checkoutSession = await axios.post("/api/checkout_sessions", {
+      items: items,
+    });
 
-    const result = await stripe!.redirectToCheckout({
+    const result = await stripe?.redirectToCheckout({
       sessionId: checkoutSession.data.id,
     });
 
-    if (result.error) {
+    if (result?.error) {
       alert(result.error.message);
     }
 
