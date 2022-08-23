@@ -31,25 +31,6 @@ function Checkout() {
     setGroupedItemsInBasket(groupedItems);
   }, [items]);
 
-  // const createCheckoutSession = async () => {
-  //   setLoading(true);
-  //   const stripe = await getStripe();
-
-  //   const checkoutSession = await axios.post("/api/checkout_sessions", {
-  //     items: items,
-  //   });
-
-  //   const result = await stripe!.redirectToCheckout({
-  //     sessionId: checkoutSession.data.id,
-  //   });
-
-  //   if (result.error) {
-  //     alert(result.error.message);
-  //   }
-
-  //   setLoading(false);
-  // };
-
   const createCheckoutSession = async () => {
     setLoading(true);
 
@@ -147,8 +128,8 @@ function Checkout() {
                 <h4 className="text-xl font-semibold">
                   How would you like to check out?
                 </h4>
-                <div className="flex space-x-4">
-                  <div className="flex flex-1 flex-col items-center rounded-xl bg-gray-200 p-8 py-12 text-center">
+                <div className="flex flex-col gap-4 md:flex-row">
+                  <div className="order-2 flex flex-1 flex-col items-center rounded-xl bg-gray-200 p-8 py-12 text-center">
                     <h4 className="mb-4 flex flex-col text-xl font-semibold">
                       <span>Pay Monthly</span>
                       <span>with Apple Card</span>
@@ -163,7 +144,7 @@ function Checkout() {
                     </p>
                   </div>
 
-                  <div className="flex flex-1 flex-col items-center space-y-8 rounded-xl bg-gray-200 p-8 py-12">
+                  <div className="flex flex-1 flex-col items-center space-y-8 rounded-xl bg-gray-200 p-8 py-12 md:order-2">
                     <h4 className="mb-4 flex flex-col text-xl font-semibold">
                       Pay in Full
                       <span>
@@ -172,6 +153,7 @@ function Checkout() {
                     </h4>
 
                     <Button
+                      noIcon
                       loading={loading}
                       title="Check Out"
                       width="w-full"

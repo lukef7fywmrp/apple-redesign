@@ -3,6 +3,7 @@ import type { GetServerSideProps } from "next";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
+import { ComponentProps } from "react";
 import Basket from "../components/Basket";
 import Header from "../components/Header";
 import Landing from "../components/Landing";
