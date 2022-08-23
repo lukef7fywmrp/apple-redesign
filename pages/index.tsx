@@ -13,7 +13,7 @@ import type { Session } from "next-auth";
 interface Props {
   products: Product[];
   categories: Category[];
-  session: Session | null;
+  // session: Session | null;
 }
 
 const Home = ({ products, categories }: Props) => {
@@ -83,9 +83,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 ) => {
   const products = await fetchProducts();
   const categories = await fetchCategories();
-  const session = await getSession(context);
+  // const session = await getSession(context);
 
   return {
-    props: { products, categories, session },
+    props: { products, categories },
   };
 };
