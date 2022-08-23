@@ -6,16 +6,41 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.5",
+    "@heroicons/react": "^1.0.6",
+    "@portabletext/react": "^1.0.6",
+    "@reduxjs/toolkit": "^1.8.3",
+    "@sanity/image-url": "^1.0.1",
+    "@stripe/stripe-js": "^1.34.0",
+    "axios": "^0.27.2",
+    "micro": "^9.4.0",
     "next": "latest",
+    "next-auth": "^4.10.3",
+    "next-auth-sanity": "^1.4.4",
+    "next-sanity": "^0.6.0",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-burger-menu": "^3.0.8",
+    "react-currency-formatter": "^1.1.0",
+    "react-dom": "18.1.0",
+    "react-hamburger-menus": "^1.0.16",
+    "react-hot-toast": "^2.3.0",
+    "react-redux": "^8.0.2",
+    "react-responsive": "^9.0.0-beta.10",
+    "sanity-mux-player": "^0.0.27",
+    "stripe": "^9.16.0",
+    "tailwind-scrollbar-hide": "^1.1.7",
+    "tailwindcss-border-gradient-radius": "^3.0.1"
   },
   "devDependencies": {
     "@types/node": "17.0.35",
     "@types/react": "18.0.9",
+    "@types/react-burger-menu": "^2.8.3",
+    "@types/react-currency-formatter": "^1.1.4",
     "@types/react-dom": "18.0.5",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
+    "prettier": "^2.7.1",
+    "prettier-plugin-tailwindcss": "^0.1.11",
     "tailwindcss": "^3.1.2",
     "typescript": "4.7.2"
   }
